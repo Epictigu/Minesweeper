@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Minesweeper</string>
+    <string-array name="difficulties">
+        <item>Einfach</item>
+        <item>Mittel</item>
+        <item>Schwer</item>
+    </string-array>
+</resources>

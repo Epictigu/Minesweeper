@@ -13,4 +13,17 @@
     <color name="scheme_3">#A8DADC</color>
     <color name="scheme_4">#457B9D</color>
     <color name="scheme_5">#1D3557</color>
+
+    <color name="topLeftSweeperColor">#f5f5f5</color>
+    <color name="bottomRightSweeperColor">#8c8c8c</color>
+    <color name="mainSweeperColor">#c5c9c8</color>
+
+    <color name="numberOne">#3399ff</color>
+    <color name="numberTwo">#33ff33</color>
+    <color name="numberThree">#fe3734</color>
+    <color name="numberFour">#fe34fe</color>
+    <color name="numberFive">#800000</color>
+    <color name="numberSix">#30D5C8</color>
+    <color name="numberSeven">#000000</color>
+    <color name="numberEight">#e5e5e5</color>
 </resources>

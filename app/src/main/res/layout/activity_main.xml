@@ -6,7 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <def.fhswf.ma.minesweeper.MinesweeperPane
+        android:id="@+id/minesweeperPane"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="NotSibling" />
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/bottomLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
@@ -40,6 +51,7 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"

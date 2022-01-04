@@ -1,6 +1,8 @@
 package def.fhswf.ma.minesweeper;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,6 +15,7 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import def.fhswf.ma.minesweeper.manager.MineManager;
+import def.fhswf.ma.minesweeper.manager.PointManager;
+import def.fhswf.ma.minesweeper.manager.TimeManager;
+
 public class MinesweeperPane extends View {
 
     private Random random = new Random();
@@ -28,13 +35,16 @@ public class MinesweeperPane extends View {
     private int rows = 9;
     private int columns = 9;
 
-    private int[][] state;
+    private int[][] state = null;
     private int[][] value = null;
+
+    private boolean gameOver = false;
 
     private Map<Integer, Integer> numberColors = new HashMap<Integer, Integer>();
 
     private Point downPoint = null;
     private Handler handler = new Handler();
+    private TimeManager timeManager = new TimeManager();
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
@@ -47,10 +57,13 @@ public class MinesweeperPane extends View {
                 int rowIndex = (int) ((((float)downPoint.y) - ySet) / (height / rows));
                 int columnIndex = (int) (((float)downPoint.x) / (width / columns));
 
-                if(state[rowIndex][columnIndex] == 0)
+                if(state[rowIndex][columnIndex] == 0) {
                     state[rowIndex][columnIndex] = 1;
-                else if(state[rowIndex][columnIndex] == 1)
+                    MineManager.getInstance().setHitMines(MineManager.getInstance().getHitMines() + 1);
+                } else if(state[rowIndex][columnIndex] == 1) {
                     state[rowIndex][columnIndex] = 0;
+                    MineManager.getInstance().setHitMines(MineManager.getInstance().getHitMines() - 1);
+                }
                 downPoint = null;
                 invalidate();
             }
@@ -75,18 +88,6 @@ public class MinesweeperPane extends View {
             Arrays.fill(i, 0);
         }
 
-        setLongClickable(true);
-        setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-
-                System.out.println("Test");
-
-
-
-                return true;
-            }
-        });
     }
 
     @Override
@@ -115,16 +116,16 @@ public class MinesweeperPane extends View {
         canvas.drawRect(0, 0 + ySet, width, height + ySet, paint);
 
         paint.setColor(Color.GRAY);
-        for(int row = 1; row < 9; row++){
+        for(int row = 1; row < rows; row++){
             canvas.drawRect(0, ySet + yW * row - 5, width, ySet + yW * row + 5, paint);
         }
 
-        for(int column = 1; column < 9; column++){
+        for(int column = 1; column < columns; column++){
             canvas.drawRect(xW * column - 5, ySet, xW * column + 5, height + ySet, paint);
         }
 
-        for(int row = 0; row < 9; row++){
-            for(int column = 0; column < 9; column++){
+        for(int row = 0; row < rows; row++){
+            for(int column = 0; column < columns; column++){
                 int s = state[row][column];
 
                 float x = width / columns * column;
@@ -162,18 +163,15 @@ public class MinesweeperPane extends View {
                         flagIcon.draw(canvas);
                     }
                 } else if(s == 2 || s == 3) {
-                    if(s == 2)
-                        paint.setColor(Color.WHITE);
-                    else if(s == 3)
+                    if(s == 3) {
                         paint.setColor(Color.RED);
-                    canvas.drawRect(x, y, x + xW, y + yW, paint);
+                        canvas.drawRect(x, y, x + xW, y + yW, paint);
+                    }
 
                     Drawable flagIcon = getResources().getDrawable(R.mipmap.bomb_icon_foreground);
                     flagIcon.setBounds((int) (x + xW10 * 2f), (int) (y + yW10 * 2f), (int) (x + xW80), (int) (y + yW80));
                     flagIcon.draw(canvas);
                 } else if(s == 4){
-                    paint.setColor(Color.LTGRAY);
-                    //canvas.drawRect(x, y, x + xW, y + yW, paint);
 
                     int v = value[row][column];
                     if(v > 0 && v <= 8){
@@ -188,8 +186,6 @@ public class MinesweeperPane extends View {
                         paint.setColor(numberColors.get(v));
                         paint.setTextSize(48f * (yW80 - yW10 * 2) / (float)bounds.height());
                         paint.getTextBounds(v + "", 0, 1, bounds);
-                        System.out.println(xW + " " + yW);
-                        System.out.println(v + " " + bounds.width() + " " + (xW80 - xW10 * 2) + " " + (((xW80 - xW10 * 2) - bounds.width()) / 2));
                         float sizeToCenter = (((xW80 - xW10 * 2) - bounds.width()) / 2);
                         float coord = x + (xW10 * 2) + sizeToCenter;
 
@@ -206,6 +202,9 @@ public class MinesweeperPane extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if(gameOver)
+            return true;
+
         int action = event.getAction();
 
         int x = (int) event.getX();
@@ -241,11 +240,11 @@ public class MinesweeperPane extends View {
 
                 break;
             case MotionEvent.ACTION_UP:
+                if(value == null){
+                    generate(rowIndex, columnIndex);
+                }
                 if(downPoint != null){
                     downPoint = null;
-                    if(value == null){
-                        generate(rowIndex, columnIndex);
-                    }
                     clickField(rowIndex, columnIndex);
                     handler.removeCallbacks(runnable);
                     invalidate();
@@ -260,6 +259,17 @@ public class MinesweeperPane extends View {
         int v = value[row][column];
         if(v == -1) {
             state[row][column] = 3;
+            finishGame();
+            for(int r = 0; r < rows; r++){
+                for(int c = 0; c < columns; c++){
+                    if(r == row && c == column)
+                        continue;
+                    if(value[r][c] == -1)
+                        state[r][c] = 2;
+                }
+            }
+            timeManager.stopTimer();
+            showDialog("Verloren", "Eine Bombe wurde angeklickt. Das Spiel ist verloren!");
         } else if(v == 0){
             state[row][column] = 4;
             for(int eRow = -1; eRow < 2; eRow++){
@@ -271,9 +281,74 @@ public class MinesweeperPane extends View {
                         clickField(eRow + row, eColumn + column);
                 }
             }
+            PointManager.getInstance().addPoints(1);
         } else if(v > 0 && v < 9){
             state[row][column] = 4;
+            PointManager.getInstance().addPoints(1);
         }
+        if(!gameOver){
+            int emptyFields = 0;
+            for(int r = 0; r < rows; r++){
+                for(int c = 0; c < columns; c++){
+                    if(state[r][c] == 0 && value[r][c] != -1)
+                        emptyFields++;
+                }
+            }
+
+            if(emptyFields == 0){
+                for(int r = 0; r < rows; r++){
+                    for(int c = 0; c < columns; c++){
+                        if(state[r][c] == 0 && value[r][c] == -1)
+                            state[r][c] = 2;
+                    }
+                }
+                finishGame();
+                timeManager.stopTimer();
+                showDialog("Gewonnen", "Alle Felder wurden gefunden. Das Spiel ist gewonnen!");
+            }
+        }
+    }
+
+    private void finishGame(){
+        this.gameOver = true;
+        for(int r = 0; r < rows; r++){
+            for(int c = 0; c < columns; c++){
+                switch(state[r][c]){
+                    case 3:
+                        PointManager.getInstance().removePoints(5);
+                        break;
+                    case 1:
+                        if(value[r][c] == -1){
+                            PointManager.getInstance().addPoints(5);
+                        } else {
+                            PointManager.getInstance().removePoints(3);
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+    private AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
+
+    private void showDialog(String title, String message){
+        builder.setMessage(message).setTitle(title)
+                .setPositiveButton("Neues Spiel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        clearBoard();
+                    }
+                })
+                .setNegativeButton("Schließen", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private Double getDistance(Point p1, Point p2){
@@ -291,7 +366,7 @@ public class MinesweeperPane extends View {
             y = 0;
             Arrays.fill(i, 0);
             for(int j : i){
-                if(!(x == rowSafe && y == rowSafe))
+                if(!(x == rowSafe && y == columnSafe))
                     availablePoints.add(new Point(x, y));
                 y++;
             }
@@ -327,6 +402,27 @@ public class MinesweeperPane extends View {
             x++;
         }
 
+        timeManager.startTimer();
+    }
+
+    public void clearBoard(){
+        state = new int[rows][columns];
+
+        for(int[] i : state){
+            Arrays.fill(i, 0);
+        }
+        value = null;
+
+        gameOver = false;
+
+        downPoint = null;
+
+        timeManager.stopTimer();
+        timeManager.clearTimer();
+        timeManager = new TimeManager();
+        PointManager.getInstance().resetPoints();
+        MineManager.getInstance().setHitMines(0);
+        invalidate();
     }
 
 }

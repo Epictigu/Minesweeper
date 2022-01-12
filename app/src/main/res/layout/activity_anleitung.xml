@@ -7,47 +7,51 @@
     android:layout_height="match_parent"
     tools:context=".AnleitungActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="0pt"
-                    android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/titel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginLeft="10pt"
-                            android:layout_marginTop="10pt"
-                            android:text="Hilfe"
-                            android:textColor="@color/black"
-                            android:textSize="24sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="0pt"
+                android:orientation="horizontal">
 
-                        <Space
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1" />
+                    <TextView
+                        android:id="@+id/titel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="10pt"
+                        android:layout_marginTop="10pt"
+                        android:text="Hilfe"
+                        android:textColor="@color/black"
+                        android:textSize="24sp" />
 
-                        <Button
-                            android:id="@+id/exitButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginTop="5pt"
-                            android:layout_marginRight="5pt"
-                            android:maxWidth="100pt"
-                            android:text="X" />
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
 
-                </LinearLayout>
+                <Button
+                    android:id="@+id/exitButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5pt"
+                    android:layout_marginRight="5pt"
+                    android:maxWidth="100pt"
+                    android:text="X" />
+
+            </LinearLayout>
 
                 <TextView
                     android:id="@+id/Part1"
@@ -61,117 +65,120 @@
                     android:textSize="16sp"
                     app:layout_constraintTop_toBottomOf="@id/titel" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-                        <ImageView
-                            android:id="@+id/imageMine"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:scaleX="0.8"
-                            android:scaleY="0.8"
-                            app:srcCompat="@mipmap/bomb_icon_foreground" />
-
-                        <TextView
-                            android:id="@+id/Part2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5pt"
-                            android:layout_marginRight="5pt"
-                            android:layout_marginBottom="5pt"
-                            android:text="Felder ohne Mine zeigen nach anklicken die Anzahl der Minen in den umliegenden 8 Feldern an. Wenn keine Minen anliegenden, werden alle anliegenden Felder ohne Minen aufgedeckt(Bsp. Image oben)"
-                            android:textColor="@color/black"
-                            android:textSize="16sp"
-                            app:layout_constraintTop_toBottomOf="@id/titel" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/imageFlag"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:srcCompat="@mipmap/flag_icon_foreground" />
-
-                        <TextView
-                            android:id="@+id/Part3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5pt"
-                            android:layout_marginRight="5pt"
-                            android:layout_marginBottom="5pt"
-                            android:text="Du kannst Felder, auf denen du denkst, dass eine Miene liegt Markieren in denen du sie länger gedrückt hältst. Oben ist ein Zähler, der angibt wie viele Minen verbleiben minus Anzahl deiner Markierungen."
-                            android:textColor="@color/black"
-                            android:textSize="16sp"
-                            app:layout_constraintTop_toBottomOf="@id/titel" />
-                </LinearLayout>
+                <ImageView
+                    android:id="@+id/imageMine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
+                    app:srcCompat="@mipmap/bomb_icon_foreground" />
 
                 <TextView
-                    android:id="@+id/Part4"
+                    android:id="@+id/Part2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5pt"
                     android:layout_marginRight="5pt"
                     android:layout_marginBottom="5pt"
-                    android:text="Je schneller du bist desto mehr Punkte gibt es. Die höchsten Punktzahlen kannst du im Scoreboard einsehen. Unterteilt werden die Punktzahlen in Einfach, Fortgeschritten, Profi und Benutzerdefiniert. Diese Schwierigkeiten unterscheiden sich in:"
+                    android:text="Felder ohne Mine zeigen nach anklicken die Anzahl der Minen in den umliegenden 8 Feldern an. Wenn keine Minen anliegenden, werden alle anliegenden Felder ohne Minen aufgedeckt(Bsp. Image oben)"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintTop_toBottomOf="@id/titel" />
 
-                <TextView
-                    android:id="@+id/Part5_1"
-                    android:layout_width="match_parent"
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageFlag"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15pt"
-                    android:layout_marginRight="15pt"
-                    android:text="Anfänger: Spielfeld von 9 mal 9 (64) Feldern mit 10 Minen (12 %)."
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintTop_toBottomOf="@id/titel" />
+                    app:srcCompat="@mipmap/flag_icon_foreground" />
 
                 <TextView
-                    android:id="@+id/Part5_2"
+                    android:id="@+id/Part3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15pt"
-                    android:layout_marginRight="15pt"
-                    android:text="Fortgeschrittene: Spielfeld von 16 mal 16 (256) Feldern mit 40 Minen (16 %)"
+                    android:layout_marginLeft="5pt"
+                    android:layout_marginRight="5pt"
+                    android:layout_marginBottom="5pt"
+                    android:text="Du kannst Felder, auf denen du denkst, dass eine Miene liegt Markieren in denen du sie länger gedrückt hältst. Oben ist ein Zähler, der angibt wie viele Minen verbleiben minus Anzahl deiner Markierungen."
                     android:textColor="@color/black"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     app:layout_constraintTop_toBottomOf="@id/titel" />
+            </LinearLayout>
 
-                <TextView
-                    android:id="@+id/Part5_3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15pt"
-                    android:layout_marginRight="15pt"
-                    android:text="Profis: Spielfeld von 30 mal 16 (480) Feldern mit 99 Minen (21 %)."
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintTop_toBottomOf="@id/titel" />
+            <TextView
+                android:id="@+id/Part4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5pt"
+                android:layout_marginRight="5pt"
+                android:layout_marginBottom="5pt"
+                android:text="Je schneller du bist desto mehr Punkte gibt es. Die höchsten Punktzahlen kannst du im Scoreboard einsehen. Unterteilt werden die Punktzahlen in Einfach, Fortgeschritten, Profi und Benutzerdefiniert. Diese Schwierigkeiten unterscheiden sich in:"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@id/titel" />
 
-                <TextView
-                    android:id="@+id/Part5_4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15pt"
-                    android:layout_marginRight="15pt"
-                    android:text="Benutzerdefiniert: Maximale Größe 30 mal 24 (720) Felder, bis zu 668 Minen (93 %). "
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintTop_toBottomOf="@id/titel" />
+            <TextView
+                android:id="@+id/Part5_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15pt"
+                android:layout_marginRight="15pt"
+                android:text="Anfänger: Spielfeld von 9 mal 9 (64) Feldern mit 10 Minen (12 %)."
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@id/titel" />
+
+            <TextView
+                android:id="@+id/Part5_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15pt"
+                android:layout_marginRight="15pt"
+                android:text="Fortgeschrittene: Spielfeld von 16 mal 16 (256) Feldern mit 40 Minen (16 %)"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@id/titel" />
+
+            <TextView
+                android:id="@+id/Part5_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15pt"
+                android:layout_marginRight="15pt"
+                android:text="Profis: Spielfeld von 30 mal 16 (480) Feldern mit 99 Minen (21 %)."
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@id/titel" />
+
+            <TextView
+                android:id="@+id/Part5_4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15pt"
+                android:layout_marginRight="15pt"
+                android:text="Benutzerdefiniert: Maximale Größe 30 mal 24 (720) Felder, bis zu 668 Minen (93 %). "
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@id/titel" />
 
 
         </LinearLayout>
+    </ScrollView>
+    <![CDATA[
 
         android:text="TextView" />
 
 
+]]>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

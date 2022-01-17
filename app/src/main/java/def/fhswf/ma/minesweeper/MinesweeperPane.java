@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 
 import java.util.ArrayList;
@@ -35,6 +36,15 @@ public class MinesweeperPane extends View {
     private int rows = 9;
     private int columns = 9;
 
+    private int rows_for_size = 9;
+    private int columns_for_size = 9;
+
+    private float xOffset = 0;
+    private float yOffset = 0;
+
+    private float paneWidth;
+    private float paneHeight;
+
     private int[][] state = null;
     private int[][] value = null;
 
@@ -43,19 +53,23 @@ public class MinesweeperPane extends View {
     private Map<Integer, Integer> numberColors = new HashMap<Integer, Integer>();
 
     private Point downPoint = null;
+    private Point movePoint = null;
     private Handler handler = new Handler();
     private TimeManager timeManager = new TimeManager();
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
             if(downPoint != null){
-                float width = getWidth();
-                float height = width * (rows / columns);
+                float width = paneWidth;
+                float height = paneHeight;
 
-                float ySet = (0.0f + getHeight() - height) / 2;
+                float ySet = (0.0f + getCutHeight() - height) / 2;
+                if(ySet < 0){
+                    ySet = 0;
+                }
 
-                int rowIndex = (int) ((((float)downPoint.y) - ySet) / (height / rows));
-                int columnIndex = (int) (((float)downPoint.x) / (width / columns));
+                int rowIndex = (int) ((((float)downPoint.y) - ySet - yOffset) / (height / rows));
+                int columnIndex = (int) (((float)downPoint.x - xOffset) / (width / columns));
 
                 if(state[rowIndex][columnIndex] == 0) {
                     state[rowIndex][columnIndex] = 1;
@@ -88,6 +102,18 @@ public class MinesweeperPane extends View {
             Arrays.fill(i, 0);
         }
 
+        ViewTreeObserver viewTreeObserver = getViewTreeObserver();
+        if(viewTreeObserver.isAlive()){
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    paneWidth = getWidth() / columns_for_size * columns;
+                    paneHeight = paneWidth * ((float)rows / columns);
+                }
+            });
+        }
+
     }
 
     @Override
@@ -96,14 +122,16 @@ public class MinesweeperPane extends View {
         Paint paint = new Paint();
 
         paint.setColor(getResources().getColor(R.color.scheme_3));
-        canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
+        canvas.drawRect(0, 0, getWidth(), getCutHeight(), paint);
 
-        float width = canvas.getWidth();
-        float height = width * (rows / columns);
+        float width = canvas.getWidth() * ((float) columns / columns_for_size);
+        float height = width * ((float) rows / columns);
 
-        float ySet = (0.0f + canvas.getHeight() - height) / 2;
+        float ySet = (0.0f + getCutHeight() - height) / 2;
+        if(ySet < 0)
+            ySet = 0;
 
-        float xW = width / columns ;
+        float xW = width / columns;
         float yW = height / rows;
 
         float xW10 = xW * 0.1f;
@@ -113,15 +141,15 @@ public class MinesweeperPane extends View {
         float yW80 = yW * 0.8f;
 
         paint.setColor(Color.LTGRAY);
-        canvas.drawRect(0, 0 + ySet, width, height + ySet, paint);
+        canvas.drawRect(xOffset, yOffset + ySet, xOffset + width, yOffset+ height + ySet, paint);
 
         paint.setColor(Color.GRAY);
         for(int row = 1; row < rows; row++){
-            canvas.drawRect(0, ySet + yW * row - 5, width, ySet + yW * row + 5, paint);
+            canvas.drawRect(xOffset + 0, yOffset + ySet + yW * row - 5, xOffset + width, yOffset + ySet + yW * row + 5, paint);
         }
 
         for(int column = 1; column < columns; column++){
-            canvas.drawRect(xW * column - 5, ySet, xW * column + 5, height + ySet, paint);
+            canvas.drawRect(xOffset + xW * column - 5, yOffset + ySet, xOffset + xW * column + 5, yOffset + height + ySet, paint);
         }
 
         for(int row = 0; row < rows; row++){
@@ -135,10 +163,10 @@ public class MinesweeperPane extends View {
                     paint.setColor(getResources().getColor(R.color.topLeftSweeperColor));
 
                     Path path = new Path();
-                    path.moveTo(x, y);
-                    path.lineTo(x + xW, y);
-                    path.lineTo(x, y + yW);
-                    path.lineTo(x, y);
+                    path.moveTo(xOffset + x, yOffset + y);
+                    path.lineTo(xOffset + x + xW, yOffset + y);
+                    path.lineTo(xOffset + x, yOffset + y + yW);
+                    path.lineTo(xOffset + x, yOffset + y);
                     path.close();
 
                     canvas.drawPath(path, paint);
@@ -146,33 +174,32 @@ public class MinesweeperPane extends View {
                     paint.setColor(getResources().getColor(R.color.bottomRightSweeperColor));
 
                     Path path2 = new Path();
-                    path2.moveTo(x, y + yW);
-                    path2.lineTo(x + xW, y + yW);
-                    path2.lineTo(x + xW, y);
-                    path2.lineTo(x, y + yW);
+                    path2.moveTo(xOffset + x, yOffset + y + yW);
+                    path2.lineTo(xOffset + x + xW, yOffset + y + yW);
+                    path2.lineTo(xOffset + x + xW, yOffset + y);
+                    path2.lineTo(xOffset + x, yOffset + y + yW);
                     path2.close();
 
                     canvas.drawPath(path2, paint);
 
                     paint.setColor(getResources().getColor(R.color.mainSweeperColor));
-                    canvas.drawRect(x + xW10, y + yW10, x + xW80 + xW10, y + yW80 + yW10, paint);
+                    canvas.drawRect(xOffset + x + xW10, yOffset + y + yW10, xOffset + x + xW80 + xW10, yOffset + y + yW80 + yW10, paint);
 
                     if(s == 1){
                         Drawable flagIcon = getResources().getDrawable(R.mipmap.flag_icon_foreground);
-                        flagIcon.setBounds((int) (x + xW10 * 2f), (int) (y + yW10 * 2f), (int) (x + xW80), (int) (y + yW80));
+                        flagIcon.setBounds((int) (xOffset + x + xW10 * 2f), (int) (yOffset + y + yW10 * 2f), (int) (xOffset + x + xW80), (int) (yOffset + y + yW80));
                         flagIcon.draw(canvas);
                     }
                 } else if(s == 2 || s == 3) {
                     if(s == 3) {
                         paint.setColor(Color.RED);
-                        canvas.drawRect(x, y, x + xW, y + yW, paint);
+                        canvas.drawRect(xOffset + x, yOffset + y, xOffset + x + xW, yOffset + y + yW, paint);
                     }
 
                     Drawable flagIcon = getResources().getDrawable(R.mipmap.bomb_icon_foreground);
-                    flagIcon.setBounds((int) (x + xW10 * 2f), (int) (y + yW10 * 2f), (int) (x + xW80), (int) (y + yW80));
+                    flagIcon.setBounds((int) (xOffset + x + xW10 * 2f), (int) (yOffset + y + yW10 * 2f), (int) (xOffset + x + xW80), (int) (yOffset + y + yW80));
                     flagIcon.draw(canvas);
                 } else if(s == 4){
-
                     int v = value[row][column];
                     if(v > 0 && v <= 8){
                         Rect bounds = new Rect();
@@ -193,11 +220,51 @@ public class MinesweeperPane extends View {
                         if(v == 1)
                             xSet-=10;
 
-                        canvas.drawText(String.valueOf(v), coord + xSet, y+ (yW80), paint);
+                        canvas.drawText(String.valueOf(v), xOffset + coord + xSet, yOffset + y+ (yW80), paint);
                     }
                 }
             }
         }
+    }
+
+    private void handleMouseMove(int x, int y){
+        if(downPoint != null)
+            if(getDistance(new Point(x, y), downPoint) > 25) {
+                movePoint = downPoint;
+                downPoint = null;
+                handler.removeCallbacks(runnable);
+            }
+        if(movePoint != null) {
+            move(x, y);
+        }
+    }
+
+    private void move(int x, int y){
+        if(paneWidth < getWidth()) {
+            xOffset = 0;
+        } else {
+            xOffset = xOffset - (movePoint.x - x);
+            if(xOffset > 0)
+                xOffset = 0;
+            if(xOffset < (paneWidth - getWidth()) * -1)
+                xOffset = (paneWidth - getWidth()) * -1;
+        }
+
+        if(paneHeight < getCutHeight()) {
+            yOffset = 0;
+        } else {
+            yOffset = yOffset - (movePoint.y - y);
+            if(yOffset > 0)
+                yOffset = 0;
+            if(yOffset < (paneHeight - getCutHeight()) * -1)
+                yOffset = (paneHeight - getCutHeight()) * -1;
+        }
+        movePoint = new Point(x, y);
+        invalidate();
+    }
+
+    public int getCutHeight(){
+        return getHeight() - 90;
     }
 
     @Override
@@ -210,16 +277,25 @@ public class MinesweeperPane extends View {
         int x = (int) event.getX();
         int y = (int) event.getY();
 
-        float width = getWidth();
-        float height = width * (rows / columns);
+        float width = paneWidth;
+        float height = paneHeight;
 
-        float ySet = (0.0f + getHeight() - height) / 2;
+        float ySet = (0.0f + getCutHeight() - height) / 2;
+        if(ySet < 0){
+            ySet = 0;
+        }
 
-        if(y < ySet || y > ySet + height)
+        if(y < ySet || y > ySet + height) {
+            if(action == MotionEvent.ACTION_MOVE) {
+                handleMouseMove(x, y);
+            } else if(action == MotionEvent.ACTION_DOWN){
+                movePoint = new Point(x, y);
+            }
             return true;
+        }
 
-        int rowIndex = (int) ((event.getY() - ySet) / (height / rows));
-        int columnIndex = (int) (event.getX() / (width / columns));
+        int rowIndex = (int) ((event.getY() - ySet - yOffset) / (height / rows));
+        int columnIndex = (int) ((event.getX() - xOffset) / (width / columns));
 
         Point pressPoint = new Point(x, y);
 
@@ -228,19 +304,17 @@ public class MinesweeperPane extends View {
                 if(downPoint != null){
                     handler.removeCallbacks(runnable);
                 }
+                if(movePoint != null){
+                    movePoint = null;
+                }
                 downPoint = pressPoint;
                 handler.postDelayed(runnable, 400);
                 break;
             case MotionEvent.ACTION_MOVE:
-                if(downPoint != null)
-                    if(getDistance(pressPoint, downPoint) > 5) {
-                        downPoint = null;
-                        handler.removeCallbacks(runnable);
-                    }
-
+                handleMouseMove(x, y);
                 break;
             case MotionEvent.ACTION_UP:
-                if(value == null){
+                if(value == null && movePoint == null){
                     generate(rowIndex, columnIndex);
                 }
                 if(downPoint != null){
@@ -248,6 +322,9 @@ public class MinesweeperPane extends View {
                     clickField(rowIndex, columnIndex);
                     handler.removeCallbacks(runnable);
                     invalidate();
+                }
+                if(movePoint != null){
+                    movePoint = null;
                 }
                 break;
         }
@@ -337,7 +414,8 @@ public class MinesweeperPane extends View {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        clearBoard();
+                        startNewGame();
+                        //clearBoard();
                     }
                 })
                 .setNegativeButton("Schließen", new DialogInterface.OnClickListener() {
@@ -357,6 +435,33 @@ public class MinesweeperPane extends View {
         return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
     }
 
+    public void startNewGame(){
+        builder.setTitle("Schwierigkeit auswählen")
+                .setItems(R.array.difficulties, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        if(which == 0){
+                            rows = 9;
+                            columns = 9;
+                            MineManager.getInstance().setMaxMines(10);
+                        } else if(which == 1){
+                            rows = 16;
+                            columns = 16;
+                            MineManager.getInstance().setMaxMines(40);
+                        } else if(which == 2){
+                            rows = 30;
+                            columns = 16;
+                            MineManager.getInstance().setMaxMines(99);
+                        }
+                        clearBoard();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     private void generate(int rowSafe, int columnSafe){
         value = new int[rows][columns];
 
@@ -373,7 +478,7 @@ public class MinesweeperPane extends View {
             x++;
         }
 
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < MineManager.getInstance().getMaxMines(); i++){
             Point p = availablePoints.get(random.nextInt(availablePoints.size()));
             availablePoints.remove(p);
 
@@ -416,6 +521,13 @@ public class MinesweeperPane extends View {
         gameOver = false;
 
         downPoint = null;
+        movePoint = null;
+
+        paneWidth = getWidth() / columns_for_size * columns;
+        paneHeight = paneWidth * ((float)rows / columns);
+
+        xOffset = 0;
+        yOffset = 0;
 
         timeManager.stopTimer();
         timeManager.clearTimer();

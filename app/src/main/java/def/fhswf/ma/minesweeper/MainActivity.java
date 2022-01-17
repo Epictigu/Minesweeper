@@ -27,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
         ((Button)findViewById(R.id.newGameButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MinesweeperPane)findViewById(R.id.minesweeperPane)).clearBoard();
+                //((MinesweeperPane)findViewById(R.id.minesweeperPane)).clearBoard();
+                ((MinesweeperPane)findViewById(R.id.minesweeperPane)).startNewGame();
             }
         });
     }

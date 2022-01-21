@@ -47,6 +47,7 @@
             android:layout_marginBottom="30dp"
             android:backgroundTint="@color/scheme_5"
             android:clickable="true"
+            android:onClick="showHighscoreBoard"
             android:tint="@color/scheme_2"
             app:layout_anchor="@id/bottomAppBar"
             app:srcCompat="@mipmap/trophy" />

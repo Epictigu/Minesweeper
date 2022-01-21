@@ -33,6 +33,10 @@ public class PointManager {
         updateLable();
     }
 
+    public int getPoints(){
+        return points;
+    }
+
     private void updateLable(){
         ((TextView) MainActivity.getInstance().findViewById(R.id.pointsView)).setText(String.format("%03d", this.points));
     }

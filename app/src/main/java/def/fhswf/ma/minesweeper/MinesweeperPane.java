@@ -17,7 +17,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.EditText;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import def.fhswf.ma.minesweeper.highscore.Difficulty;
+import def.fhswf.ma.minesweeper.highscore.Highscore;
+import def.fhswf.ma.minesweeper.manager.HighscoreManager;
 import def.fhswf.ma.minesweeper.manager.MineManager;
 import def.fhswf.ma.minesweeper.manager.PointManager;
 import def.fhswf.ma.minesweeper.manager.TimeManager;
@@ -346,7 +351,7 @@ public class MinesweeperPane extends View {
                 }
             }
             timeManager.stopTimer();
-            showDialog("Verloren", "Eine Bombe wurde angeklickt. Das Spiel ist verloren!");
+            //showDialog("Verloren", "Eine Bombe wurde angeklickt. Das Spiel ist verloren!");
         } else if(v == 0){
             state[row][column] = 4;
             for(int eRow = -1; eRow < 2; eRow++){
@@ -381,7 +386,7 @@ public class MinesweeperPane extends View {
                 }
                 finishGame();
                 timeManager.stopTimer();
-                showDialog("Gewonnen", "Alle Felder wurden gefunden. Das Spiel ist gewonnen!");
+                //showDialog("Gewonnen", "Alle Felder wurden gefunden. Das Spiel ist gewonnen!");
             }
         }
     }
@@ -404,11 +409,39 @@ public class MinesweeperPane extends View {
                 }
             }
         }
+
+        EditText input = new EditText(getContext());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
+        builder.setTitle("Namen eingeben").setView(input)
+                .setPositiveButton("Absenden", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                new Thread(){
+                    public void run(){
+                        try {
+                            HighscoreManager.getInstance().addHighscore(new Highscore(input.getText().toString(), PointManager.getInstance().getPoints(), timeManager.getTime()), Difficulty.EINFACH);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
+                dialog.cancel();
+            }
+        }).setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+        builder.setView(null);
     }
 
-    private AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
-
     private void showDialog(String title, String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
         builder.setMessage(message).setTitle(title)
                 .setPositiveButton("Neues Spiel", new DialogInterface.OnClickListener() {
                     @Override
@@ -436,6 +469,7 @@ public class MinesweeperPane extends View {
     }
 
     public void startNewGame(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
         builder.setTitle("Schwierigkeit auswählen")
                 .setItems(R.array.difficulties, new DialogInterface.OnClickListener() {
                     @Override

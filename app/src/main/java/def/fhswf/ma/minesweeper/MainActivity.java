@@ -42,4 +42,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void showHighscoreBoard(View v){
+        Intent intent = new Intent(this, HighscoreActivity.class);
+        startActivity(intent);
+    }
+
 }

@@ -49,6 +49,11 @@ public class TimeManager extends Thread{
         start();
     }
 
+    public int getTime(){
+        TextView timeView = (TextView) MainActivity.getInstance().findViewById(R.id.timeView);
+        return Integer.parseInt(timeView.getText().toString());
+    }
+
     public void stopTimer(){
         continueTime = false;
     }

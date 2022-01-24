@@ -37,9 +37,12 @@ public class Camera {
         return yOffset;
     }
 
-    public void resetOffset(){
-        this.xOffset = 0;
-        this.yOffset = 0;
+    public float getPaneWidth(){
+        return paneWidth;
+    }
+
+    public float getPaneHeight(){
+        return paneHeight;
     }
 
     public void move(int x, int y){

@@ -26,4 +26,15 @@
     <color name="numberSix">#30D5C8</color>
     <color name="numberSeven">#000000</color>
     <color name="numberEight">#e5e5e5</color>
+
+    <array name="numberColor">
+        <item>@color/numberOne</item>
+        <item>@color/numberTwo</item>
+        <item>@color/numberThree</item>
+        <item>@color/numberFour</item>
+        <item>@color/numberFive</item>
+        <item>@color/numberSix</item>
+        <item>@color/numberSeven</item>
+        <item>@color/numberEight</item>
+    </array>
 </resources>

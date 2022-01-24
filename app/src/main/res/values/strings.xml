@@ -2,8 +2,8 @@
     <string name="app_name">Minesweeper</string>
     <string-array name="difficulties">
         <item>Einfach</item>
-        <item>Forgeschritten</item>
-        <item>Profi</item>
+        <item>Mittel</item>
+        <item>Schwer</item>
         <item>Benutzerdefiniert</item>
     </string-array>
     <string name="title_activity_anleitung">AnleitungActivity</string>

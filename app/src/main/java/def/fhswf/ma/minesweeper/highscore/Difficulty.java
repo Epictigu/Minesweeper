@@ -4,6 +4,7 @@ public enum Difficulty {
 
     EINFACH,
     MITTEL,
-    SCHWER
+    SCHWER,
+    BENUTZERDEFINIERT
 
 }

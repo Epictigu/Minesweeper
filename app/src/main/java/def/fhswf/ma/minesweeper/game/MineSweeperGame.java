@@ -27,6 +27,9 @@ public class MineSweeperGame {
     private final Random random = new Random();
     private boolean gameOver = false;
 
+    private Difficulty difficulty;
+    private int gameState = 0;
+
     private int rows;
     private int columns;
 
@@ -35,9 +38,10 @@ public class MineSweeperGame {
 
     private TimeManager timeManager = new TimeManager();
 
-    public MineSweeperGame(MinesweeperPane minesweeperPane, int rows, int columns){
+    public MineSweeperGame(MinesweeperPane minesweeperPane, int rows, int columns, Difficulty difficulty){
         this.minesweeperPane = minesweeperPane;
 
+        this.difficulty = difficulty;
         this.rows = rows;
         this.columns = columns;
 
@@ -80,6 +84,7 @@ public class MineSweeperGame {
         int v = value[row][column];
         if(v == -1) {
             state[row][column] = 3;
+            gameState = 1;
             finishGame();
             for(int r = 0; r < rows; r++){
                 for(int c = 0; c < columns; c++){
@@ -90,7 +95,6 @@ public class MineSweeperGame {
                 }
             }
             timeManager.stopTimer();
-            //showDialog("Verloren", "Eine Bombe wurde angeklickt. Das Spiel ist verloren!");
         } else if(v == 0){
             state[row][column] = 4;
             for(int eRow = -1; eRow < 2; eRow++){
@@ -123,9 +127,9 @@ public class MineSweeperGame {
                             state[r][c] = 2;
                     }
                 }
+                gameState = 2;
                 finishGame();
                 timeManager.stopTimer();
-                //showDialog("Gewonnen", "Alle Felder wurden gefunden. Das Spiel ist gewonnen!");
             }
         }
     }
@@ -197,38 +201,81 @@ public class MineSweeperGame {
                             PointManager.getInstance().removePoints(3);
                         }
                         break;
+                    case 2:
+                        if(value[r][c] == -1 && gameState == 2){
+                            PointManager.getInstance().addPoints(5);
+                        }
+                        break;
                 }
             }
         }
 
+        showFinishMessage();
+
         EditText input = new EditText(minesweeperPane.getContext());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
-        builder.setTitle("Namen eingeben").setView(input)
-                .setPositiveButton("Absenden", new DialogInterface.OnClickListener() {
+        Highscore placeholder = new Highscore("Placeholder", PointManager.getInstance().getPoints(), timeManager.getTime());
+        try {
+            if(difficulty != Difficulty.BENUTZERDEFINIERT && HighscoreManager.getInstance().checkHighscore(placeholder, difficulty)){
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
+                builder.setTitle("Namen eingeben").setView(input)
+                        .setPositiveButton("Absenden", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new Thread(){
+                                    public void run(){
+                                        try {
+                                            HighscoreManager.getInstance().addHighscore(new Highscore(input.getText().toString(), PointManager.getInstance().getPoints(), timeManager.getTime()), difficulty);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }.start();
+                                dialog.cancel();
+                            }
+                        }).setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new Thread(){
-                            public void run(){
-                                try {
-                                    HighscoreManager.getInstance().addHighscore(new Highscore(input.getText().toString(), PointManager.getInstance().getPoints(), timeManager.getTime()), Difficulty.EINFACH);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }.start();
                         dialog.cancel();
                     }
-                }).setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+                builder.setView(null);
             }
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showFinishMessage(){
+        if(gameState == 1){
+            showDialog("Verloren", "Eine Bombe wurde angeklickt. Das Spiel ist verloren!");
+        } else if(gameState == 2){
+            showDialog("Gewonnen", "Alle Felder wurden gefunden. Das Spiel ist gewonnen!");
+        }
+    }
+
+    private void showDialog(String title, String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
+        builder.setMessage(message).setTitle(title)
+                .setNegativeButton("Schließen", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setPositiveButton("Neues Spiel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        minesweeperPane.startNewGame();
+                    }
+                });
 
         AlertDialog alert = builder.create();
         alert.show();
-        builder.setView(null);
     }
 
 }

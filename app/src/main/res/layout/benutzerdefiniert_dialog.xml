@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/benutzerdefiniert_dialog"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/scheme_1"
+        android:padding="10px"
+        android:text="Benutzerdefiniertes Feld"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/rowCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/rowLabel"
+        android:layout_alignEnd="@id/textView7"
+        android:layout_marginRight="10px"
+        android:text="9"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/columnCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/columnLabel"
+        android:layout_alignEnd="@id/columnBar"
+        android:text="9"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/mineCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/mineLabel"
+        android:layout_alignEnd="@id/mineBar"
+        android:text="10"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mineBar"
+        android:layout_alignEnd="@id/mineBar"
+        android:backgroundTint="@color/scheme_1"
+        android:text="Erstellen"
+        android:textColor="@color/scheme_2" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/submitButton"
+        android:layout_toLeftOf="@id/submitButton"
+        android:backgroundTint="@color/scheme_1"
+        android:text="Abbrechen"
+        android:textColor="@color/scheme_2" />
+
+    <SeekBar
+        android:id="@+id/mineBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mineLabel"
+        android:layout_alignLeft="@id/rowLabel"
+        android:layout_alignEnd="@id/rowCount"
+        android:max="658"
+        android:progressTint="@color/scheme_1_variant"
+        android:thumbTint="@color/scheme_1" />
+
+    <TextView
+        android:id="@+id/mineLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/columnBar"
+        android:layout_alignLeft="@id/rowLabel"
+        android:text="Minen:"
+        android:textSize="20sp" />
+
+    <SeekBar
+        android:id="@+id/columnBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/columnLabel"
+        android:layout_alignEnd="@id/rowCount"
+        android:max="15"
+        android:progressTint="@color/scheme_1_variant"
+        android:thumbTint="@color/scheme_1" />
+
+    <TextView
+        android:id="@+id/columnLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rowBar"
+        android:layout_alignLeft="@id/rowLabel"
+        android:text="Spalten:"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/rowLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView7"
+        android:layout_marginLeft="10px"
+        android:text="Zeilen:"
+        android:textSize="20sp" />
+
+    <SeekBar
+        android:id="@+id/rowBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rowLabel"
+        android:layout_alignLeft="@id/rowLabel"
+        android:layout_alignEnd="@id/rowCount"
+        android:max="21"
+        android:progressTint="@color/scheme_1_variant"
+        android:thumbTint="@color/scheme_1"></SeekBar>
+
+</RelativeLayout>

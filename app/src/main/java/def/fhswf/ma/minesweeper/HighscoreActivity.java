@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.tabs.TabLayout;
+
 import java.io.IOException;
 
 import def.fhswf.ma.minesweeper.highscore.Difficulty;
@@ -22,10 +24,22 @@ public class HighscoreActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         this.instance = this;
-
         setContentView(R.layout.activity_highscore);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Difficulty difficulty = Difficulty.valueOf(tab.getText().toString().toUpperCase());
+                setTableContent(difficulty);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
     }
 
     @Override
@@ -37,6 +51,7 @@ public class HighscoreActivity extends AppCompatActivity {
                 try {
                     HighscoreManager.getInstance().loadHighscore();
                     setTableContent(Difficulty.EINFACH);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -46,6 +61,7 @@ public class HighscoreActivity extends AppCompatActivity {
 
     private void setTableContent(Difficulty difficulty){
         Highscore[] highscores = HighscoreManager.getInstance().getHighscoreByDifficulty(difficulty);
+        final int length = (highscores == null) ? 10 : highscores.length;
 
         runOnUiThread(new Runnable() {
             @Override
@@ -53,9 +69,7 @@ public class HighscoreActivity extends AppCompatActivity {
                 TableLayout tableLayout = (TableLayout) findViewById(R.id.tableLayout);
                 tableLayout.removeAllViews();
 
-                for(int i = 0; i < highscores.length; i++){
-                    System.out.println(highscores[i]);
-
+                for(int i = 0; i < length; i++){
                     TableRow tableRow = new TableRow(instance, null);
                     tableRow.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
 
@@ -66,11 +80,7 @@ public class HighscoreActivity extends AppCompatActivity {
                     ranking.setLayoutParams(layoutParamsRanking);
                     tableRow.addView(ranking);
 
-                    if(highscores[i] != null) {
-                        System.out.println(highscores[i].getName());
-                        System.out.println(highscores[i].getPoints());
-                        System.out.println(highscores[i].getTime());
-
+                    if(highscores != null && highscores[i] != null) {
                         TextView name = new TextView(instance, null);
                         name.setText(highscores[i].getName());
                         TableRow.LayoutParams layoutParamsName = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);

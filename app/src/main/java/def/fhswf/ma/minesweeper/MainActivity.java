@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.IOException;
+
+import def.fhswf.ma.minesweeper.manager.HighscoreManager;
 import def.fhswf.ma.minesweeper.ui.MinesweeperPane;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +27,15 @@ public class MainActivity extends AppCompatActivity {
         instance = this;
 
         setContentView(R.layout.activity_main);
+        new Thread(){
+            public void run(){
+                try {
+                    HighscoreManager.getInstance().loadHighscore();
+                } catch (IOException e) {
+                    System.err.println("Konnte keine Verbindung zur Highscore aufbauen!");
+                }
+            }
+        }.start();
 
         ((Button)findViewById(R.id.newGameButton)).setOnClickListener(new View.OnClickListener() {
             @Override

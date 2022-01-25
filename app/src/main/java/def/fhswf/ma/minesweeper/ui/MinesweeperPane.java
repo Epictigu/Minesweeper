@@ -1,6 +1,7 @@
 package def.fhswf.ma.minesweeper.ui;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
@@ -12,17 +13,22 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.text.Layout;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import def.fhswf.ma.minesweeper.Constants;
 import def.fhswf.ma.minesweeper.MainActivity;
 import def.fhswf.ma.minesweeper.R;
 import def.fhswf.ma.minesweeper.game.MineSweeperGame;
+import def.fhswf.ma.minesweeper.highscore.Difficulty;
 import def.fhswf.ma.minesweeper.manager.MineManager;
 import def.fhswf.ma.minesweeper.manager.PointManager;
+import def.fhswf.ma.minesweeper.ui.dialog.BenutzerdefiniertDialog;
 
 public class MinesweeperPane extends View {
 
@@ -67,7 +73,7 @@ public class MinesweeperPane extends View {
     public MinesweeperPane(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        game = new MineSweeperGame(this, 9, 9);
+        game = new MineSweeperGame(this, 9, 9, Difficulty.EINFACH);
 
         ViewTreeObserver viewTreeObserver = getViewTreeObserver();
         if(viewTreeObserver.isAlive()){
@@ -90,13 +96,17 @@ public class MinesweeperPane extends View {
                 getCutHeight());
     }
 
+    public Handler getHandler(){
+        return handler;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         Paint paint = new Paint();
 
         paint.setColor(getResources().getColor(R.color.scheme_3));
-        canvas.drawRect(0, 0, getWidth(), getCutHeight(), paint);
+        canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
 
         float width = canvas.getWidth() * ((float) game.getColumns() / Constants.COLUMN_FOR_SIZE);
         float height = width * ((float) game.getRows() / game.getColumns());
@@ -282,27 +292,6 @@ public class MinesweeperPane extends View {
         return true;
     }
 
-    private void showDialog(String title, String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
-        builder.setMessage(message).setTitle(title)
-                .setPositiveButton("Neues Spiel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                        startNewGame();
-                    }
-                })
-                .setNegativeButton("Schließen", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
     private Double getDistance(Point p1, Point p2){
         float xDistance = p2.x - p1.x;
         float yDistance = p2.y - p1.y;
@@ -319,21 +308,38 @@ public class MinesweeperPane extends View {
 
                         int newRows = 0;
                         int newColumns = 0;
+                        Difficulty difficulty = Difficulty.BENUTZERDEFINIERT;
                         game.getTimeManager().clearTimer();
                         if(which == 0){
                             newRows = 9;
                             newColumns = 9;
+                            difficulty = Difficulty.EINFACH;
                             MineManager.getInstance().setMaxMines(10);
                         } else if(which == 1){
                             newRows = 16;
                             newColumns = 16;
+                            difficulty = Difficulty.MITTEL;
                             MineManager.getInstance().setMaxMines(40);
                         } else if(which == 2){
                             newRows = 30;
                             newColumns = 16;
+                            difficulty = Difficulty.SCHWER;
                             MineManager.getInstance().setMaxMines(99);
+                        } else if(which == 3){
+                            BenutzerdefiniertDialog bdd = new BenutzerdefiniertDialog(getContext());
+                            bdd.show();
+                            bdd.getSubmitButton().setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    bdd.cancel();
+                                    MineManager.getInstance().setMaxMines(bdd.getMineBar().getProgress() + 10);
+                                    clearBoard(bdd.getRowBar().getProgress() + 9, bdd.getColumnBar().getProgress() + 9, Difficulty.BENUTZERDEFINIERT);
+                                }
+                            });
+                            return;
                         }
-                        clearBoard(newRows, newColumns);
+
+                        clearBoard(newRows, newColumns, difficulty);
                     }
                 });
 
@@ -341,10 +347,10 @@ public class MinesweeperPane extends View {
         alert.show();
     }
 
-    public void clearBoard(int rows, int columns){
+    public void clearBoard(int rows, int columns, Difficulty difficulty){
         game.getTimeManager().stopTimer();
         game.getTimeManager().clearTimer();
-        game = new MineSweeperGame(this, rows, columns);
+        game = new MineSweeperGame(this, rows, columns, difficulty);
 
         downPoint = null;
         createCamera();

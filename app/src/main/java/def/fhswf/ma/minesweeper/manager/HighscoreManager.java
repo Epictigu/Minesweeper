@@ -30,7 +30,7 @@ public class HighscoreManager {
 
     private Socket connection = null;
 
-    private Map<Difficulty, Highscore[]> highscoreByDifficulty;
+    private Map<Difficulty, Highscore[]> highscoreByDifficulty = null;
 
     private HighscoreManager(){
         connect();
@@ -51,7 +51,6 @@ public class HighscoreManager {
     }
 
     public void loadHighscore() throws IOException {
-        System.out.println("Test");
         connect();
 
         OutputStreamWriter os = new OutputStreamWriter(connection.getOutputStream());
@@ -60,6 +59,19 @@ public class HighscoreManager {
         pw.flush();
 
         receiveHighscore();
+    }
+
+    public boolean checkHighscore(Highscore highscore, Difficulty difficulty) throws IOException {
+        if(highscoreByDifficulty == null)
+            return false;
+
+        Highscore[] highscoreA = highscoreByDifficulty.get(difficulty);
+        if(highscoreA == null || highscoreA.length == 0)
+            return true;
+        if(highscoreA[9] == null || highscoreA[9].getPoints() < highscore.getPoints()
+                || (highscoreA[9].getPoints() == highscore.getPoints() && highscoreA[9].getTime() < highscore.getTime()))
+            return true;
+        return false;
     }
 
     private void receiveHighscore() throws IOException {
@@ -104,6 +116,8 @@ public class HighscoreManager {
 
     public void addHighscore(Highscore highscore, Difficulty difficulty) throws IOException {
         connect();
+
+
 
         OutputStreamWriter os = new OutputStreamWriter(connection.getOutputStream());
         PrintWriter pw = new PrintWriter(os);

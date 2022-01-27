@@ -1,5 +1,6 @@
 package def.fhswf.ma.minesweeper;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.tabs.TabLayout;
@@ -64,6 +66,7 @@ public class HighscoreActivity extends AppCompatActivity {
         final int length = (highscores == null) ? 10 : highscores.length;
 
         runOnUiThread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void run() {
                 TableLayout tableLayout = (TableLayout) findViewById(R.id.tableLayout);
@@ -77,6 +80,9 @@ public class HighscoreActivity extends AppCompatActivity {
                     ranking.setText((i + 1) + "");
                     TableRow.LayoutParams layoutParamsRanking = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
                     layoutParamsRanking.weight = 10;
+                    layoutParamsRanking.height = 100;
+                    ranking.setAutoSizeTextTypeWithDefaults(ranking.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+                    ranking.setPadding(0,10,0,0);
                     ranking.setLayoutParams(layoutParamsRanking);
                     tableRow.addView(ranking);
 
@@ -85,6 +91,9 @@ public class HighscoreActivity extends AppCompatActivity {
                         name.setText(highscores[i].getName());
                         TableRow.LayoutParams layoutParamsName = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
                         layoutParamsName.weight = 50;
+                        layoutParamsName.height = 100;
+                        name.setAutoSizeTextTypeWithDefaults(name.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+                        name.setPadding(0,10,0,0);
                         name.setLayoutParams(layoutParamsName);
                         tableRow.addView(name);
 
@@ -92,13 +101,19 @@ public class HighscoreActivity extends AppCompatActivity {
                         points.setText(highscores[i].getPoints() + "");
                         TableRow.LayoutParams layoutParamsPoints = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
                         layoutParamsPoints.weight = 20;
+                        layoutParamsPoints.height = 100;
+                        points.setAutoSizeTextTypeWithDefaults(points.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+                        points.setPadding(0,10,0,0);
                         points.setLayoutParams(layoutParamsPoints);
                         tableRow.addView(points);
 
                         TextView time = new TextView(instance, null);
-                        time.setText(highscores[i].getTime() + "");
+                        time.setText(highscores[i].getTime() + "s");
                         TableRow.LayoutParams layoutParamsTime = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
                         layoutParamsTime.weight = 20;
+                        layoutParamsTime.height = 100;
+                        time.setAutoSizeTextTypeWithDefaults(time.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+                        time.setPadding(0,10,0,0);
                         time.setLayoutParams(layoutParamsTime);
                         tableRow.addView(time);
                     }

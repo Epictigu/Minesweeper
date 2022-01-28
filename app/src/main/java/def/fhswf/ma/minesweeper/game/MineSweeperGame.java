@@ -1,6 +1,7 @@
 package def.fhswf.ma.minesweeper.game;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.view.View;
@@ -21,6 +22,7 @@ import def.fhswf.ma.minesweeper.manager.MineManager;
 import def.fhswf.ma.minesweeper.manager.PointManager;
 import def.fhswf.ma.minesweeper.manager.TimeManager;
 import def.fhswf.ma.minesweeper.ui.MinesweeperPane;
+import def.fhswf.ma.minesweeper.ui.dialog.DialogManager;
 
 public class MineSweeperGame {
 
@@ -83,6 +85,9 @@ public class MineSweeperGame {
     }
 
     public void clickField(int row, int column){
+        if(state[row][column] == 1)
+            return;
+
         int v = value[row][column];
         if(v == -1) {
             state[row][column] = 3;
@@ -134,6 +139,14 @@ public class MineSweeperGame {
                 timeManager.stopTimer();
             }
         }
+    }
+
+    public MinesweeperPane getMinesweeperPane() {
+        return minesweeperPane;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
     }
 
     public void setState(int row, int column, int value){
@@ -214,106 +227,15 @@ public class MineSweeperGame {
 
         showFinishMessage();
 
-        EditText input = new EditText(minesweeperPane.getContext());
-
-        Highscore placeholder = new Highscore("Placeholder", PointManager.getInstance().getPoints(), timeManager.getTime());
-        try {
-            if(difficulty != Difficulty.BENUTZERDEFINIERT && HighscoreManager.getInstance().checkHighscore(placeholder, difficulty)){
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
-                builder.setTitle("Namen eingeben").setView(input)
-                    .setPositiveButton("Absenden", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {}
-                    }).setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                });
-
-                AlertDialog alert = builder.create();
-
-                alert.setOnShowListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface dialog) {
-                        Button button  = ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                        button.setOnClickListener(new View.OnClickListener(){
-                            @Override
-                            public void onClick(View v) {
-                                String inputText = input.getText().toString();
-                                if(inputText.length() == 0) {
-                                    showIncorrectInputAlert("Das Namensfeld darf nicht leer sein.");
-                                    return;
-                                }
-                                if(inputText.length() > 16){
-                                    showIncorrectInputAlert("Der Name darf nicht länger als 16 Buchstaben sein.");
-                                    return;
-                                }
-
-                                new Thread(){
-                                    public void run(){
-                                        try {
-                                            HighscoreManager.getInstance().addHighscore(new Highscore(input.getText().toString(), PointManager.getInstance().getPoints(), timeManager.getTime()), difficulty);
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }.start();
-                                dialog.dismiss();
-                            }
-                        });
-                    }
-                });
-
-                alert.show();
-                builder.setView(null);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void showIncorrectInputAlert(String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
-        builder.setMessage(message).setTitle("Inkorrekte Eingabe!")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alert = builder.create();
-        alert.show();
+        DialogManager.getInstance().showHighscoreInputDialog(this);
     }
 
     private void showFinishMessage(){
         if(gameState == 1){
-            showDialog("Verloren", "Eine Bombe wurde angeklickt. Das Spiel ist verloren!");
+            DialogManager.getInstance().showNewGameDialog(minesweeperPane,"Verloren", "Eine Bombe wurde angeklickt. Das Spiel ist verloren!");
         } else if(gameState == 2){
-            showDialog("Gewonnen", "Alle Felder wurden gefunden. Das Spiel ist gewonnen!");
+            DialogManager.getInstance().showNewGameDialog(minesweeperPane, "Gewonnen", "Alle Felder wurden gefunden. Das Spiel ist gewonnen!");
         }
-    }
-
-    private void showDialog(String title, String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
-        builder.setMessage(message).setTitle(title)
-                .setNegativeButton("Schließen", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .setPositiveButton("Neues Spiel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                        minesweeperPane.startNewGame();
-                    }
-                });
-
-        AlertDialog alert = builder.create();
-        alert.show();
     }
 
 }

@@ -2,6 +2,8 @@ package def.fhswf.ma.minesweeper;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
@@ -18,15 +20,16 @@ import java.io.IOException;
 import def.fhswf.ma.minesweeper.highscore.Difficulty;
 import def.fhswf.ma.minesweeper.highscore.Highscore;
 import def.fhswf.ma.minesweeper.manager.HighscoreManager;
+import def.fhswf.ma.minesweeper.ui.dialog.DialogManager;
 
 public class HighscoreActivity extends AppCompatActivity {
 
-    private HighscoreActivity instance;
+    private static HighscoreActivity instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.instance = this;
+        instance = this;
         setContentView(R.layout.activity_highscore);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -34,7 +37,18 @@ public class HighscoreActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 Difficulty difficulty = Difficulty.valueOf(tab.getText().toString().toUpperCase());
-                setTableContent(difficulty);
+                try {
+                    setTableContent(difficulty);
+                } catch (IOException e) {
+                    System.out.println("Konnte keine Verbindung zum Server aufbauen!");
+                    finish();
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            DialogManager.getInstance().showNoConnectionDialog();
+                        }
+                    });
+                }
             }
 
             @Override
@@ -55,13 +69,24 @@ public class HighscoreActivity extends AppCompatActivity {
                     setTableContent(Difficulty.EINFACH);
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("Konnte keine Verbindung zum Server aufbauen!");
+                    finish();
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            DialogManager.getInstance().showNoConnectionDialog();
+                        }
+                    });
                 }
             }
         }.start();
     }
 
-    private void setTableContent(Difficulty difficulty){
+    public static HighscoreActivity getInstance(){
+        return instance;
+    }
+
+    private void setTableContent(Difficulty difficulty) throws IOException {
         Highscore[] highscores = HighscoreManager.getInstance().getHighscoreByDifficulty(difficulty);
         final int length = (highscores == null) ? 10 : highscores.length;
 

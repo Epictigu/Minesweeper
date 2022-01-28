@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import def.fhswf.ma.minesweeper.manager.HighscoreManager;
 import def.fhswf.ma.minesweeper.ui.MinesweeperPane;
+import def.fhswf.ma.minesweeper.ui.dialog.DialogManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,8 +41,7 @@ public class MainActivity extends AppCompatActivity {
         ((Button)findViewById(R.id.newGameButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //((MinesweeperPane)findViewById(R.id.minesweeperPane)).clearBoard();
-                ((MinesweeperPane)findViewById(R.id.minesweeperPane)).startNewGame();
+                DialogManager.getInstance().startNewGameDialog((MinesweeperPane)findViewById(R.id.minesweeperPane));
             }
         });
 

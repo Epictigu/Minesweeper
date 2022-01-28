@@ -17,7 +17,7 @@ import def.fhswf.ma.minesweeper.highscore.Highscore;
 public class HighscoreManager {
 
     private static HighscoreManager instance;
-    public static HighscoreManager getInstance(){
+    public static HighscoreManager getInstance() throws IOException {
         if(instance != null && instance.connection == null)
             instance = new HighscoreManager();
         if(instance == null)
@@ -32,18 +32,13 @@ public class HighscoreManager {
 
     private Map<Difficulty, Highscore[]> highscoreByDifficulty = null;
 
-    private HighscoreManager(){
+    private HighscoreManager() throws IOException {
         connect();
     }
 
-    private void connect(){
-        try {
-            if(connection == null || connection.isClosed())
-                connection = new Socket(SERVER_IP, SERVER_PORT);
-        } catch(IOException e) {
-            System.out.println("Konnte Verbindung zu Server nicht aufbauen.");
-            e.printStackTrace();
-        }
+    private void connect() throws IOException {
+        if(connection == null || connection.isClosed())
+            connection = new Socket(SERVER_IP, SERVER_PORT);
     }
 
     public Highscore[] getHighscoreByDifficulty(Difficulty difficulty){

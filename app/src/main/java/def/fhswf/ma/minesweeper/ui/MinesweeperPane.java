@@ -12,7 +12,10 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -39,37 +42,6 @@ public class MinesweeperPane extends View {
     private Point downPoint = null;
     private final Handler handler = new Handler();
 
-    private final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            if(downPoint != null){
-                if(game.isGameOver())
-                    return;
-
-                float width = camera.getPaneWidth();
-                float height = camera.getPaneHeight();
-
-                float ySet = (0.0f + getCutHeight() - height) / 2;
-                if(ySet < 0){
-                    ySet = 0;
-                }
-
-                int rowIndex = (int) ((((float)downPoint.y) - ySet - camera.getYOffset()) / (height / game.getRows()));
-                int columnIndex = (int) (((float)downPoint.x - camera.getXOffset()) / (width / game.getColumns()));
-
-                if(game.getState(rowIndex, columnIndex) == 0) {
-                    game.setState(rowIndex, columnIndex, 1);
-                    MineManager.getInstance().setHitMines(MineManager.getInstance().getHitMines() + 1);
-                } else if(game.getState(rowIndex, columnIndex) == 1) {
-                    game.setState(rowIndex, columnIndex, 0);
-                    MineManager.getInstance().setHitMines(MineManager.getInstance().getHitMines() - 1);
-                }
-                downPoint = null;
-                invalidate();
-            }
-        }
-    };
-
     public MinesweeperPane(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -88,17 +60,25 @@ public class MinesweeperPane extends View {
 
     }
 
-    private void createCamera(){
-        float paneWidth = getWidth() / Constants.COLUMN_FOR_SIZE * game.getColumns();
-        camera = new Camera(paneWidth,
-                paneWidth * ((float)game.getRows() / game.getColumns()),
-                getWidth(),
-                getCutHeight());
-    }
 
     public Handler getHandler(){
         return handler;
     }
+
+    private Double getDistance(Point p1, Point p2){
+        float xDistance = p2.x - p1.x;
+        float yDistance = p2.y - p1.y;
+        return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+    }
+
+    public MineSweeperGame getGame() {
+        return game;
+    }
+
+    public int getCutHeight(){
+        return (game.getRows() >= 14 && (game.getColumns() == 9 || game.getColumns() == 10)) ? getHeight() - 190 : getHeight() - 90;
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -209,24 +189,50 @@ public class MinesweeperPane extends View {
                 }
             }
         }
-    }
 
-    private void handleMouseMove(int x, int y){
-        if(downPoint != null)
-            if(getDistance(new Point(x, y), downPoint) > 25) {
-                camera.setMovePoint(downPoint);
-                downPoint = null;
-                handler.removeCallbacks(runnable);
-            }
-        if(camera.isMovePointSet()) {
-            camera.move(x, y);
-            invalidate();
+        paint.setColor(Color.BLACK);
+
+        if(camera.getXOffset() < 0){
+            Path path = new Path();
+            path.moveTo(20, getCutHeight() / 2);
+            path.lineTo(60, getCutHeight() / 2 - 20);
+            path.lineTo(60, getCutHeight() / 2 + 20);
+            path.lineTo(20, getCutHeight() / 2);
+            path.close();
+
+            canvas.drawPath(path, paint);
+        }
+        if(camera.getYOffset() < 0 ){
+            Path path = new Path();
+            path.moveTo(getWidth() / 2, 20);
+            path.lineTo(getWidth() / 2 - 20, 60);
+            path.lineTo(getWidth() / 2 + 20, 60);
+            path.lineTo(getWidth() / 2, 20);
+
+            canvas.drawPath(path, paint);
+        }
+
+        if(camera.getPaneWidth() + camera.getXOffset() > getWidth()){
+            Path path = new Path();
+            path.moveTo(getWidth() - 20, getCutHeight() / 2);
+            path.lineTo(getWidth() - 60, getCutHeight() / 2 - 20);
+            path.lineTo(getWidth() - 60, getCutHeight() / 2 + 20);
+            path.lineTo(getWidth() - 20, getCutHeight() / 2);
+            path.close();
+
+            canvas.drawPath(path, paint);
+        }
+        if(camera.getPaneHeight() + camera.getYOffset() > getCutHeight()){
+            Path path = new Path();
+            path.moveTo(getWidth() / 2, getCutHeight() - 20 - 80);
+            path.lineTo(getWidth() / 2 - 20, getCutHeight() - 60 - 80);
+            path.lineTo(getWidth() / 2 + 20, getCutHeight() - 60 - 80);
+            path.lineTo(getWidth() / 2, getCutHeight() - 20 - 80);
+
+            canvas.drawPath(path, paint);
         }
     }
 
-    public int getCutHeight(){
-        return (game.getRows() >= 14 && (game.getColumns() == 9 || game.getColumns() == 10)) ? getHeight() - 190 : getHeight() - 90;
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -245,7 +251,7 @@ public class MinesweeperPane extends View {
 
         if(y < ySet || y > ySet + height) {
             if(action == MotionEvent.ACTION_MOVE) {
-                handleMouseMove(x, y);
+                handleTouchMove(x, y);
             } else if(action == MotionEvent.ACTION_DOWN){
                 downPoint = new Point(x, y);
             }
@@ -260,16 +266,16 @@ public class MinesweeperPane extends View {
         switch(action){
             case MotionEvent.ACTION_DOWN:
                 if(downPoint != null){
-                    handler.removeCallbacks(runnable);
+                    handler.removeCallbacks(longPressRunnable);
                 }
                 if(camera.isMovePointSet()){
                     camera.setMovePoint(null);
                 }
                 downPoint = pressPoint;
-                handler.postDelayed(runnable, 400);
+                handler.postDelayed(longPressRunnable, 400);
                 break;
             case MotionEvent.ACTION_MOVE:
-                handleMouseMove(x, y);
+                handleTouchMove(x, y);
                 break;
             case MotionEvent.ACTION_UP:
                 if(game.isGameOver())
@@ -280,7 +286,7 @@ public class MinesweeperPane extends View {
                 if(downPoint != null){
                     downPoint = null;
                     game.clickField(rowIndex, columnIndex);
-                    handler.removeCallbacks(runnable);
+                    handler.removeCallbacks(longPressRunnable);
                     invalidate();
                 }
                 if(camera.isMovePointSet()){
@@ -292,59 +298,72 @@ public class MinesweeperPane extends View {
         return true;
     }
 
-    private Double getDistance(Point p1, Point p2){
-        float xDistance = p2.x - p1.x;
-        float yDistance = p2.y - p1.y;
-        return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+    private void handleTouchMove(int x, int y){
+        if(downPoint != null)
+            if(getDistance(new Point(x, y), downPoint) > 25) {
+                camera.setMovePoint(downPoint);
+                downPoint = null;
+                handler.removeCallbacks(longPressRunnable);
+            }
+        if(camera.isMovePointSet()) {
+            camera.move(x, y);
+            invalidate();
+        }
     }
 
-    public void startNewGame(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
-        builder.setTitle("Schwierigkeit auswählen")
-                .setItems(R.array.difficulties, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
 
-                        int newRows = 0;
-                        int newColumns = 0;
-                        Difficulty difficulty = Difficulty.BENUTZERDEFINIERT;
-                        game.getTimeManager().clearTimer();
-                        if(which == 0){
-                            newRows = 9;
-                            newColumns = 9;
-                            difficulty = Difficulty.EINFACH;
-                            MineManager.getInstance().setMaxMines(10);
-                        } else if(which == 1){
-                            newRows = 16;
-                            newColumns = 16;
-                            difficulty = Difficulty.MITTEL;
-                            MineManager.getInstance().setMaxMines(40);
-                        } else if(which == 2){
-                            newRows = 30;
-                            newColumns = 16;
-                            difficulty = Difficulty.SCHWER;
-                            MineManager.getInstance().setMaxMines(99);
-                        } else if(which == 3){
-                            BenutzerdefiniertDialog bdd = new BenutzerdefiniertDialog(getContext());
-                            bdd.show();
-                            bdd.getSubmitButton().setOnClickListener(new OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    bdd.cancel();
-                                    MineManager.getInstance().setMaxMines(bdd.getMineBar().getProgress() + 10);
-                                    clearBoard(bdd.getRowBar().getProgress() + 9, bdd.getColumnBar().getProgress() + 9, Difficulty.BENUTZERDEFINIERT);
-                                }
-                            });
-                            return;
-                        }
+    private final Runnable longPressRunnable = new Runnable() {
+        @Override
+        public void run() {
+            handleLongPress();
+        }
+    };
 
-                        clearBoard(newRows, newColumns, difficulty);
-                    }
-                });
+    private void handleLongPress(){
+        if(downPoint != null){
+            if(game.isGameOver())
+                return;
 
-        AlertDialog alert = builder.create();
-        alert.show();
+            float width = camera.getPaneWidth();
+            float height = camera.getPaneHeight();
+
+            float ySet = (0.0f + getCutHeight() - height) / 2;
+            if(ySet < 0){
+                ySet = 0;
+            }
+
+            int rowIndex = (int) ((((float)downPoint.y) - ySet - camera.getYOffset()) / (height / game.getRows()));
+            int columnIndex = (int) (((float)downPoint.x - camera.getXOffset()) / (width / game.getColumns()));
+
+            if(game.getState(rowIndex, columnIndex) == 0) {
+                game.setState(rowIndex, columnIndex, 1);
+                MineManager.getInstance().setHitMines(MineManager.getInstance().getHitMines() + 1);
+            } else if(game.getState(rowIndex, columnIndex) == 1) {
+                game.setState(rowIndex, columnIndex, 0);
+                MineManager.getInstance().setHitMines(MineManager.getInstance().getHitMines() - 1);
+            }
+            vibrate(100);
+            downPoint = null;
+            invalidate();
+        }
+    }
+
+    private void vibrate(long ms){
+        Vibrator v = (Vibrator) getContext().getSystemService(getContext().VIBRATOR_SERVICE);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            v.vibrate(VibrationEffect.createOneShot(ms, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            v.vibrate(ms);
+        }
+    }
+
+
+    private void createCamera(){
+        float paneWidth = getWidth() / Constants.COLUMN_FOR_SIZE * game.getColumns();
+        camera = new Camera(paneWidth,
+                paneWidth * ((float)game.getRows() / game.getColumns()),
+                getWidth(),
+                getCutHeight());
     }
 
     public void clearBoard(int rows, int columns, Difficulty difficulty){

@@ -22,6 +22,9 @@ import def.fhswf.ma.minesweeper.highscore.Highscore;
 import def.fhswf.ma.minesweeper.manager.HighscoreManager;
 import def.fhswf.ma.minesweeper.ui.dialog.DialogManager;
 
+/**
+ * Autor: Dominik Müller
+ */
 public class HighscoreActivity extends AppCompatActivity {
 
     private static HighscoreActivity instance;

@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 
 import def.fhswf.ma.minesweeper.R;
 
+/**
+ * Autor: Marcus Nolzen
+ */
 public class BenutzerdefiniertDialog extends Dialog {
 
     public BenutzerdefiniertDialog(Context context) {

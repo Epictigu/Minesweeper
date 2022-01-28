@@ -22,6 +22,9 @@ import def.fhswf.ma.minesweeper.manager.MineManager;
 import def.fhswf.ma.minesweeper.manager.PointManager;
 import def.fhswf.ma.minesweeper.ui.MinesweeperPane;
 
+/**
+ * Autor: Marcus Nolzen
+ */
 public class DialogManager {
 
     private static DialogManager instance;

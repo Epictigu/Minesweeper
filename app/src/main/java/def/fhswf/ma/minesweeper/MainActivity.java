@@ -13,6 +13,9 @@ import def.fhswf.ma.minesweeper.manager.HighscoreManager;
 import def.fhswf.ma.minesweeper.ui.MinesweeperPane;
 import def.fhswf.ma.minesweeper.ui.dialog.DialogManager;
 
+/**
+ * Autor: Marcus Nolzen, Dominik Müller, Timo Röder
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static  MainActivity instance;

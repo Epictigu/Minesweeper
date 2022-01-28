@@ -24,6 +24,9 @@ import def.fhswf.ma.minesweeper.manager.TimeManager;
 import def.fhswf.ma.minesweeper.ui.MinesweeperPane;
 import def.fhswf.ma.minesweeper.ui.dialog.DialogManager;
 
+/**
+ * Autor: Timo Röder
+ */
 public class MineSweeperGame {
 
     private MinesweeperPane minesweeperPane;

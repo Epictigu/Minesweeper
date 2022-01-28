@@ -5,6 +5,9 @@ import android.widget.TextView;
 import def.fhswf.ma.minesweeper.MainActivity;
 import def.fhswf.ma.minesweeper.R;
 
+/**
+ * Autor: Timo Röder
+ */
 public class PointManager {
 
     private static PointManager instance;

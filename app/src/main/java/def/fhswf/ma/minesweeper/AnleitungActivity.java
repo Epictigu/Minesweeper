@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-
+/**
+ * Autor: Marcus Nolzen
+ */
 public class AnleitungActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {

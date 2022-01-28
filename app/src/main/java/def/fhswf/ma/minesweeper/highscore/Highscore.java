@@ -1,5 +1,8 @@
 package def.fhswf.ma.minesweeper.highscore;
 
+/**
+ * Autor: Dominik Müller
+ */
 public class Highscore {
 
     private String name;

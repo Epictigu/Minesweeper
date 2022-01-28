@@ -6,6 +6,9 @@ import android.widget.TextView;
 import def.fhswf.ma.minesweeper.MainActivity;
 import def.fhswf.ma.minesweeper.R;
 
+/**
+ * Autor: Timo Röder
+ */
 public class TimeManager extends Thread{
 
     private Handler uiHandler;

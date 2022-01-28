@@ -33,6 +33,9 @@ import def.fhswf.ma.minesweeper.manager.MineManager;
 import def.fhswf.ma.minesweeper.manager.PointManager;
 import def.fhswf.ma.minesweeper.ui.dialog.BenutzerdefiniertDialog;
 
+/**
+ * Autor: Timo Röder
+ */
 public class MinesweeperPane extends View {
 
     private Camera camera;

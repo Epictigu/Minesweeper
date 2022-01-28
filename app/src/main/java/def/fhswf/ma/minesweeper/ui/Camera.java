@@ -2,6 +2,9 @@ package def.fhswf.ma.minesweeper.ui;
 
 import android.graphics.Point;
 
+/**
+ * Autor: Timo Röder
+ */
 public class Camera {
 
     private Point movePoint = null;

@@ -14,6 +14,9 @@ import java.util.Map;
 import def.fhswf.ma.minesweeper.highscore.Difficulty;
 import def.fhswf.ma.minesweeper.highscore.Highscore;
 
+/**
+ * Autor: Dominik Müller
+ */
 public class HighscoreManager {
 
     private static HighscoreManager instance;

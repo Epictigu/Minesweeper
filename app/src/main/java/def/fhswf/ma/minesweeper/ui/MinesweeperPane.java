@@ -225,7 +225,7 @@ public class MinesweeperPane extends View {
     }
 
     public int getCutHeight(){
-        return getHeight() - 90;
+        return (game.getRows() >= 14 && (game.getColumns() == 9 || game.getColumns() == 10)) ? getHeight() - 190 : getHeight() - 90;
     }
 
     @Override

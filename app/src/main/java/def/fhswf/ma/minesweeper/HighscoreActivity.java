@@ -88,7 +88,10 @@ public class HighscoreActivity extends AppCompatActivity {
 
                     if(highscores != null && highscores[i] != null) {
                         TextView name = new TextView(instance, null);
-                        name.setText(highscores[i].getName());
+                        String nameS = highscores[i].getName();
+                        if(nameS.length() > 16)
+                            nameS = nameS.substring(0, 16);
+                        name.setText(nameS);
                         TableRow.LayoutParams layoutParamsName = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
                         layoutParamsName.weight = 50;
                         layoutParamsName.height = 100;

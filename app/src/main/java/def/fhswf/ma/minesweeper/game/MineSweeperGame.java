@@ -3,6 +3,8 @@ package def.fhswf.ma.minesweeper.game;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Point;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import java.io.IOException;
@@ -219,9 +221,35 @@ public class MineSweeperGame {
             if(difficulty != Difficulty.BENUTZERDEFINIERT && HighscoreManager.getInstance().checkHighscore(placeholder, difficulty)){
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
                 builder.setTitle("Namen eingeben").setView(input)
-                        .setPositiveButton("Absenden", new DialogInterface.OnClickListener() {
+                    .setPositiveButton("Absenden", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {}
+                    }).setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                });
+
+                AlertDialog alert = builder.create();
+
+                alert.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        Button button  = ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                        button.setOnClickListener(new View.OnClickListener(){
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(View v) {
+                                String inputText = input.getText().toString();
+                                if(inputText.length() == 0) {
+                                    showIncorrectInputAlert("Das Namensfeld darf nicht leer sein.");
+                                    return;
+                                }
+                                if(inputText.length() > 16){
+                                    showIncorrectInputAlert("Der Name darf nicht länger als 16 Buchstaben sein.");
+                                    return;
+                                }
+
                                 new Thread(){
                                     public void run(){
                                         try {
@@ -231,22 +259,32 @@ public class MineSweeperGame {
                                         }
                                     }
                                 }.start();
-                                dialog.cancel();
+                                dialog.dismiss();
                             }
-                        }).setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
+                        });
                     }
                 });
 
-                AlertDialog alert = builder.create();
                 alert.show();
                 builder.setView(null);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showIncorrectInputAlert(String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
+        builder.setMessage(message).setTitle("Inkorrekte Eingabe!")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void showFinishMessage(){

@@ -2,6 +2,8 @@ package def.fhswf.ma.minesweeper;
 
 /**
  * Autor: Dominik Müller, Marcus Nolzen, Timo Röder
+ *
+ * Standart größe des Spielfelds
  */
 public class Constants {
 

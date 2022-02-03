@@ -14,6 +14,8 @@ import def.fhswf.ma.minesweeper.ui.MinesweeperPane;
 import def.fhswf.ma.minesweeper.ui.dialog.DialogManager;
 
 /**
+ * Hauptansicht. Zeigt Spiel und beinhaltet button zu funktionen
+ *
  * Autor: Marcus Nolzen, Dominik Müller, Timo Röder
  */
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +26,11 @@ public class MainActivity extends AppCompatActivity {
         return instance;
     }
 
+    /**
+     * Ruft erstes Spiel mit starten der App auf.
+     *
+     * @param savedInstanceState Aktuelle Status der App
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +64,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * öffnet Highscore Fenster Aktivity
+     *
+     * @param v übergebe die aktuelle Ansicht
+     */
     public void showHighscoreBoard(View v){
         Intent intent = new Intent(this, HighscoreActivity.class);
         startActivity(intent);

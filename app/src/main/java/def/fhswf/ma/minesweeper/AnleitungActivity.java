@@ -7,10 +7,16 @@ import android.view.View;
 import android.widget.Button;
 
 /**
+ * Eine kurze Anleitung für das Spiel
+ *
  * Autor: Marcus Nolzen
  */
 public class AnleitungActivity extends AppCompatActivity {
-
+    /**
+     * Exit Button und Text hinzufügen
+     *
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anleitung);

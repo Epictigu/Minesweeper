@@ -3,7 +3,7 @@ package def.fhswf.ma.minesweeper.ui;
 import android.graphics.Point;
 
 /**
- * Ansicht des Spielfelddes und dessen Bewegung
+ * Ansicht des Spielfeldes und dessen Bewegung
  *
  * Autor: Timo Röder
  */

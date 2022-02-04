@@ -1,7 +1,7 @@
 package def.fhswf.ma.minesweeper;
 
 /**
- * Standart größe des Spielfelds
+ * Standart größe des Spielfelds.
  *
  * Autor: Dominik Müller, Marcus Nolzen, Timo Röder
  */

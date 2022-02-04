@@ -7,7 +7,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
- * Eine kurze Anleitung für das Spiel
+ * Eine kurze Anleitung für das Spiel.
  *
  * Autor: Marcus Nolzen
  */

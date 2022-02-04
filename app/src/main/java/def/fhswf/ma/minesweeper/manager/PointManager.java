@@ -6,7 +6,7 @@ import def.fhswf.ma.minesweeper.MainActivity;
 import def.fhswf.ma.minesweeper.R;
 
 /**
- * Steuerung des Punkte in der Main Activity
+ * Steuerung der Punkte in der Main Activity
  *
  * Autor: Timo Röder
  */

@@ -1,7 +1,7 @@
 package def.fhswf.ma.minesweeper.highscore;
 
 /**
- * Eine Spiel wird mit einem Score bewertet, dieser wird in diesem Highscore festgehalten.
+ * Ein Spiel wird mit einem Score bewertet, dieser wird in diesem Highscore festgehalten.
  *
  * Autor: Dominik Müller
  */

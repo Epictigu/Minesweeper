@@ -14,7 +14,7 @@ import def.fhswf.ma.minesweeper.ui.MinesweeperPane;
 import def.fhswf.ma.minesweeper.ui.dialog.DialogManager;
 
 /**
- * Hauptansicht. Zeigt Spiel und beinhaltet button neustart
+ * Hauptansicht. Zeigt Spiel und beinhaltet Button zum starten eines neuen Spiels.
  *
  * Autor: Marcus Nolzen, Dominik Müller, Timo Röder
  */

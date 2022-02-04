@@ -1,9 +1,6 @@
 package def.fhswf.ma.minesweeper.ui;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,24 +13,21 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.text.Layout;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import def.fhswf.ma.minesweeper.Constants;
-import def.fhswf.ma.minesweeper.MainActivity;
 import def.fhswf.ma.minesweeper.R;
 import def.fhswf.ma.minesweeper.game.MineSweeperGame;
 import def.fhswf.ma.minesweeper.highscore.Difficulty;
 import def.fhswf.ma.minesweeper.manager.MineManager;
 import def.fhswf.ma.minesweeper.manager.PointManager;
-import def.fhswf.ma.minesweeper.ui.dialog.BenutzerdefiniertDialog;
 
 /**
+ * Spiel Pane von Minesweeper.
+ *
  * Autor: Timo Röder
  */
 public class MinesweeperPane extends View {
@@ -45,6 +39,11 @@ public class MinesweeperPane extends View {
     private Point downPoint = null;
     private final Handler handler = new Handler();
 
+    /**
+     *
+     * @param context Umgebung Context
+     * @param attrs Attribute Set
+     */
     public MinesweeperPane(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -236,7 +235,12 @@ public class MinesweeperPane extends View {
         }
     }
 
-
+    /**
+     * Interagieren mit dem Spielfeld. Es sind kurzes tippen oder halten des feldes und bewegen(bei Reihen oder Spalten > 9 felder) möglich.
+     *
+     * @param event Interaktionsart mit dem Spielfeld
+     * @return true= Game continues, false = Game ends
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
@@ -369,6 +373,13 @@ public class MinesweeperPane extends View {
                 getCutHeight());
     }
 
+    /**
+     * Entfernt vorheriges Spiel aus dem Parametern und der Pane.
+     *
+     * @param rows
+     * @param columns
+     * @param difficulty
+     */
     public void clearBoard(int rows, int columns, Difficulty difficulty){
         game.getTimeManager().stopTimer();
         game.getTimeManager().clearTimer();

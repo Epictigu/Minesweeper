@@ -1,10 +1,10 @@
 package def.fhswf.ma.minesweeper;
 
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Eine kurze Anleitung für das Spiel
@@ -12,11 +12,7 @@ import android.widget.Button;
  * Autor: Marcus Nolzen
  */
 public class AnleitungActivity extends AppCompatActivity {
-    /**
-     * Exit Button und Text hinzufügen
-     *
-     * @param savedInstanceState
-     */
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anleitung);

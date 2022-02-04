@@ -1,23 +1,13 @@
 package def.fhswf.ma.minesweeper.game;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.Point;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import def.fhswf.ma.minesweeper.MainActivity;
 import def.fhswf.ma.minesweeper.highscore.Difficulty;
-import def.fhswf.ma.minesweeper.highscore.Highscore;
-import def.fhswf.ma.minesweeper.manager.HighscoreManager;
 import def.fhswf.ma.minesweeper.manager.MineManager;
 import def.fhswf.ma.minesweeper.manager.PointManager;
 import def.fhswf.ma.minesweeper.manager.TimeManager;
@@ -25,6 +15,8 @@ import def.fhswf.ma.minesweeper.ui.MinesweeperPane;
 import def.fhswf.ma.minesweeper.ui.dialog.DialogManager;
 
 /**
+ * Das Spiel. Interaktion funktioniert über länge des Tippens der Felder. Erzeugt Spielfeld und Beendet das Spiel selbst.
+ *
  * Autor: Timo Röder
  */
 public class MineSweeperGame {
@@ -45,6 +37,14 @@ public class MineSweeperGame {
 
     private TimeManager timeManager = new TimeManager();
 
+    /**
+     * Konstruktor des Spiels.
+     *
+     * @param minesweeperPane Pane an der das Spiel Dargestellt wird
+     * @param rows Anzahl Reihen des Spielfelds
+     * @param columns Anzahl Spalten des Spielfelds
+     * @param difficulty Schwierigkeit des Spiels
+     */
     public MineSweeperGame(MinesweeperPane minesweeperPane, int rows, int columns, Difficulty difficulty){
         this.minesweeperPane = minesweeperPane;
 
@@ -156,6 +156,12 @@ public class MineSweeperGame {
         state[row][column] = value;
     }
 
+    /**
+     * Erste Interaktion mit dem Spielfeld. Erzeugt Bomben an zufälligen Positionen inerhalb des Feldes.
+     *
+     * @param rowSafe Prosition an der gedrückt wurde in der Reihe
+     * @param columnSafe Prosition an der gedrückt wurde in der Spalte
+     */
     public void generate(int rowSafe, int columnSafe){
         value = new int[rows][columns];
 

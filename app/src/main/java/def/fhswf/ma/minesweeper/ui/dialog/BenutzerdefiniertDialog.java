@@ -8,11 +8,11 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import def.fhswf.ma.minesweeper.R;
 
 /**
+ * Custom Dialog für Benutzterdefinierte Schwierigkeit. Eingabe der Parameter für ein Benutzterdefiniertes Spielfeld.
+ *
  * Autor: Marcus Nolzen
  */
 public class BenutzerdefiniertDialog extends Dialog {

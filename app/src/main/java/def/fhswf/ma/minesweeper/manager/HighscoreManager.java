@@ -15,6 +15,8 @@ import def.fhswf.ma.minesweeper.highscore.Difficulty;
 import def.fhswf.ma.minesweeper.highscore.Highscore;
 
 /**
+ * Befehle zum senden und empfangen von Highcores mit dem Server.
+ *
  * Autor: Dominik Müller
  */
 public class HighscoreManager {

@@ -3,6 +3,8 @@ package def.fhswf.ma.minesweeper.ui;
 import android.graphics.Point;
 
 /**
+ * Ansicht des Spielfelddes und dessen Bewegung
+ *
  * Autor: Timo Röder
  */
 public class Camera {
@@ -17,6 +19,13 @@ public class Camera {
     private float screenWidth;
     private float screenHeight;
 
+    /**
+     *
+     * @param paneWidth breite der Spiel Pane
+     * @param paneHeight höhe der Spiel Pane
+     * @param screenWidth breite Screen
+     * @param screenHeight höhe Screen
+     */
     public Camera(float paneWidth, float paneHeight, float screenWidth, float screenHeight){
         this.paneWidth = paneWidth;
         this.paneHeight = paneHeight;

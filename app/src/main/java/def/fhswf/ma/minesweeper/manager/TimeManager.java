@@ -7,6 +7,8 @@ import def.fhswf.ma.minesweeper.MainActivity;
 import def.fhswf.ma.minesweeper.R;
 
 /**
+ * Steuerung des Timers in der Main Activity
+ *
  * Autor: Timo Röder
  */
 public class TimeManager extends Thread{

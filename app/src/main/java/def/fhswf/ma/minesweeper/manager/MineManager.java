@@ -6,6 +6,8 @@ import def.fhswf.ma.minesweeper.MainActivity;
 import def.fhswf.ma.minesweeper.R;
 
 /**
+ * Steuerung des Minenzählers in der Main Activity
+ *
  * Autor: Timo Röder
  */
 public class MineManager {

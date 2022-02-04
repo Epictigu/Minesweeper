@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -23,6 +22,8 @@ import def.fhswf.ma.minesweeper.manager.HighscoreManager;
 import def.fhswf.ma.minesweeper.ui.dialog.DialogManager;
 
 /**
+ * Ruft die Liste der Highsores ab und präsentiert diese.
+ *
  * Autor: Dominik Müller
  */
 public class HighscoreActivity extends AppCompatActivity {

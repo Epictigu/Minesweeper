@@ -1,7 +1,6 @@
 package def.fhswf.ma.minesweeper.ui.dialog;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,7 +10,6 @@ import android.widget.EditText;
 
 import java.io.IOException;
 
-import def.fhswf.ma.minesweeper.HighscoreActivity;
 import def.fhswf.ma.minesweeper.MainActivity;
 import def.fhswf.ma.minesweeper.R;
 import def.fhswf.ma.minesweeper.game.MineSweeperGame;
@@ -23,6 +21,8 @@ import def.fhswf.ma.minesweeper.manager.PointManager;
 import def.fhswf.ma.minesweeper.ui.MinesweeperPane;
 
 /**
+ *
+ *
  * Autor: Marcus Nolzen
  */
 public class DialogManager {

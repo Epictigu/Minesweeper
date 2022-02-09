@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * öffnet Highscore Fenster Aktivity
      *
-     * @param v übergebe die aktuelle Ansicht
+     * @param v Übergebe die aktuelle Ansicht
      */
     public void showHighscoreBoard(View v){
         Intent intent = new Intent(this, HighscoreActivity.class);

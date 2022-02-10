@@ -40,7 +40,7 @@ public class MineSweeperGame {
     /**
      * Konstruktor des Spiels.
      *
-     * @param minesweeperPane Pane an der das Spiel Dargestellt wird
+     * @param minesweeperPane Pane an der das Spiel dargestellt wird
      * @param rows Anzahl Reihen des Spielfelds
      * @param columns Anzahl Spalten des Spielfelds
      * @param difficulty Schwierigkeit des Spiels
@@ -157,10 +157,10 @@ public class MineSweeperGame {
     }
 
     /**
-     * Erste Interaktion mit dem Spielfeld. Erzeugt Bomben an zufälligen Positionen inerhalb des Feldes.
+     * Erste Interaktion mit dem Spielfeld. Erzeugt Bomben an zufälligen Positionen innerhalb des Feldes.
      *
-     * @param rowSafe Prosition an der gedrückt wurde in der Reihe
-     * @param columnSafe Prosition an der gedrückt wurde in der Spalte
+     * @param rowSafe Position an der gedrückt wurde in der Reihe
+     * @param columnSafe Position an der gedrückt wurde in der Spalte
      */
     public void generate(int rowSafe, int columnSafe){
         value = new int[rows][columns];

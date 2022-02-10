@@ -236,7 +236,7 @@ public class MinesweeperPane extends View {
     }
 
     /**
-     * Interagieren mit dem Spielfeld. Es sind kurzes tippen oder halten des feldes und bewegen(bei Reihen oder Spalten > 9 felder) möglich.
+     * Interagieren mit dem Spielfeld. Es sind kurzes tippen oder halten des Feldes und bewegen(bei Reihen oder Spalten > 9 Felder) möglich.
      *
      * @param event Interaktionsart mit dem Spielfeld
      * @return true= Game continues, false = Game ends
